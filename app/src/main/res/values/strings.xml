@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Math Quiz</string>
+    <string name="right_string">Right</string>
+    <string name="wrong_string">Wrong</string>
+    <string name="timer_string">30s</string>
+    <string name="timer_finish"> 0s</string>
+    <string name="score_string">0/0</string>
+    <string name="highscores">HIGH SCORES</string>
+    <string name="score_card_string">Your Score Was : </string>
+
+</resources>
