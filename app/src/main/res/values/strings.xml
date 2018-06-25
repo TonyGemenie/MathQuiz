@@ -7,5 +7,7 @@
     <string name="score_string">0/0</string>
     <string name="highscores">HIGH SCORES</string>
     <string name="score_card_string">Your Score Was : </string>
+    <string name="start">START</string>
+    <string name="play_again">PLAY AGAIN</string>
 
 </resources>

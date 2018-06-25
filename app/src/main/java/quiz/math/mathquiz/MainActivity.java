@@ -8,11 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.GridLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,7 +34,8 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.score_card) TextView mScoreCard;
     @BindView(R.id.high_score_text_view) TextView highScoreTextView;
     @BindView(R.id.result) TextView mResult;
-    @BindView(R.id.playAgain) RelativeLayout gameRelativeLayout;
+    RelativeLayout gameRelativeLayout;
+
     private String[] operations = {"+", "-", "*", "/"};
     ArrayList<Integer> mHighScores = new ArrayList<>();
     ArrayList<String> dateList = new ArrayList<>();
@@ -48,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private int mSecond;
     private String mOperator;
     private int answerIndex;
-    boolean active = true;
+    private boolean active;
     private Random mRnd;
     private SharedPreferences sharedPreferences;
     public static final String HIGH_SCORE = "high_score";
@@ -59,10 +57,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        gameRelativeLayout = findViewById(R.id.gameRelativeLayout);
         mRnd = new Random();
         sharedPreferences = this.getSharedPreferences("ice_nine.cj.math", MODE_PRIVATE);
         for (int i = 0; i < 5; i++) {
-            mHighScores.add(sharedPreferences.getInt(HIGH_SCORE + i, 0));
+            mHighScores.add(sharedPreferences.getInt(HIGH_SCORE + i , 0));
             dateList.add(sharedPreferences.getString(DATE + i, ""));
         }
     }
@@ -163,8 +162,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         Collections.sort(mHighScores, Collections.reverseOrder());
         for (int i = 0; i < 5; i++) {
-            sharedPreferences.edit().putInt("HIGH_SCORE" + i, mHighScores.get(i)).apply();
-            sharedPreferences.edit().putString("DATE" + i, dateList.get(i)).apply();
+            sharedPreferences.edit().putInt("HIGH_SCORE" + i, mHighScores.get(i)).commit();
+            sharedPreferences.edit().putString("DATE" + i, dateList.get(i)).commit();
         }
         super.onStop();
     }
@@ -197,11 +196,16 @@ public class MainActivity extends AppCompatActivity {
 
     public int operatorEquation (int operator) {
         mOperator = operations[operator];
-        int bounds;
-        if (operator < 2) {
-            bounds = 20;
-        } else {
-            bounds = 200;
+        int bounds = 0;
+        switch (operator){
+            case(0):
+            case(1):
+                bounds = 200;
+                break;
+            case(2):
+            case(3):
+                bounds = 20;
+                break;
         }
         mFirst = mRnd.nextInt(bounds);
         mSecond = mRnd.nextInt(bounds);
@@ -213,6 +217,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public int computation(int operator) {
+
         switch (operator) {
             case (0):
                 return mFirst + mSecond;
@@ -228,8 +233,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void setEquationText() {
         String equationString;
-        if (mOperator.equals(" / ")) {
-            equationString = mFirst * mSecond + mOperator + mFirst + "";
+        if (mOperator.equals("/")) {
+            String firstTerm = String.valueOf(mFirst * mSecond);
+            equationString = firstTerm + mOperator + mFirst;
         } else {
             equationString = mFirst + mOperator + mSecond + "";
         }
